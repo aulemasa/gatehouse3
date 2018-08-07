@@ -26,7 +26,7 @@ def homePage(request):
 @login_required(login_url='/accounts/login/')
 def addVisit(request):
     form = VisitCreateForm()
-    visit_details = DataFilter(request.GET, queryset=VisitData.objects.filter(visit_date=datetime.date.today()).order_by('plan_hour')).qs
+    visit_details = VisitData.objects.filter(visit_date=datetime.date.today()).order_by('plan_hour')
 
     paginator = Paginator(visit_details, 10)
     page = request.GET.get('page')
@@ -41,11 +41,11 @@ def addVisit(request):
                 entry.save()
                 return HttpResponseRedirect(reverse('appadmin'))
         elif '_today' in request.POST:
-            visit_details = DataFilter(request.GET, queryset=VisitData.objects.filter(visit_date=datetime.date.today()).order_by('plan_hour')).qs
+            visit_details = VisitData.objects.filter(visit_date=datetime.date.today()).order_by('plan_hour')
             paginator = Paginator(visit_details, 10)
             page_filter = paginator.get_page(page)
         elif '_tomorrow' in request.POST:
-            visit_details = DataFilter(request.GET, queryset=VisitData.objects.filter(visit_date__gte=datetime.date.today()+datetime.timedelta(1)).order_by('plan_hour')).qs
+            visit_details = VisitData.objects.filter(visit_date__gte=datetime.date.today()+datetime.timedelta(1)).order_by('plan_hour')
             paginator = Paginator(visit_details, 10)
             page_filter = paginator.get_page(page)
         elif '_arch' in request.POST:
